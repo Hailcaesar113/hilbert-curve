@@ -1,6 +1,13 @@
 package draw
 
+
+import javafx.beans.property.StringProperty
 import javafx.scene.Group
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.control.TextField
+import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import tornadofx.*
 import tornadofx.Stylesheet.Companion.line
@@ -9,6 +16,7 @@ import kotlin.reflect.KClass
 class DrawView : View () {
     private var lastX = 0.0
     private var lastY = 0.0
+    private var depth = 0
 
     private fun Hilbert(group: Group, depth: Int, dx: Float, dy: Float) {
         if (depth > 1) Hilbert(group,depth - 1, dy, dx);
@@ -30,9 +38,23 @@ class DrawView : View () {
         lastY += dy;
     }
     override val root =
-            stackpane {
-                group {
-                    Hilbert(this, 4, 5f, 0f)
+            hbox {
+                var groupp: Group by singleAssign()
+                vbox {
+                    var number: TextField by singleAssign()
+                    label("Depth")
+                    number = textfield()
+                    button("Go") {
+                        action {
+                            depth = number.text.toInt()
+                            Hilbert(groupp, depth, 10f, 0f)
+                        }
+                    }
+                }
+                stackpane {
+                    groupp = group {
+
+                    }
                 }
             }
 
